@@ -1,5 +1,6 @@
 .DS_Store
 .vscode
+.webstorm
 node_modules
 /dist
 
