@@ -1,18 +1,36 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <h1>暂时实现的效果</h1>
+    <div class="home-links">
+      <router-link to="/components">经典组件</router-link>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import HelloWorld from '@/components/HelloWorld.vue' // @ is an alias to /src
+// import Header from '@/components/Header.vue' // @ is an alias to /src
 
 export default defineComponent({
   name: 'Home',
   components: {
-    HelloWorld
   }
 })
 </script>
+
+<style scoped>
+.home-links {
+  padding: 30px;
+  display: flex;
+  flex-flow: column;
+}
+.home-links a {
+  margin: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+.home-links a.router-link-exact-active {
+  color: #42b983;
+}
+</style>

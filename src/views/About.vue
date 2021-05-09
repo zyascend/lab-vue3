@@ -1,5 +1,6 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <h1>随便整点好玩的</h1>
+    <h2>📧 zyascend@qq.com</h2>
   </div>
 </template>
