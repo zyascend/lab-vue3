@@ -19,6 +19,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/components/:id',
     name: 'Components',
     component: () => import(/* webpackChunkName: "components" */ '../views/Components.vue')
+  },
+  {
+    path: '/css',
+    name: 'CssAnimation',
+    component: () => import(/* webpackChunkName: "css" */ '../views/CssAnimation.vue')
   }
 ]
 

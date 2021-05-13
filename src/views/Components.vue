@@ -8,8 +8,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useRoute } from 'vue-router'
-// import Header from '@/components/Header.vue' // @ is an alias to /src
-
+/**
+ * 展示经典Vue实现的经典组件
+ */
 export default defineComponent({
   name: 'Components',
   components: {

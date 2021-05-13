@@ -3,6 +3,7 @@
     <h1>暂时实现的效果</h1>
     <div class="home-links">
       <router-link to="/components">经典组件</router-link>
+      <router-link to="/css">Css动效</router-link>
     </div>
   </div>
 </template>
