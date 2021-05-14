@@ -4,6 +4,9 @@
   <show-block title="文字震动">
     <shake-text text="SHAKING" />
   </show-block>
+  <show-block title="文字遮罩">
+    <text-mask text="LION" :backUrl="imgUrl"/>
+  </show-block>
   </div>
 </template>
 
@@ -11,6 +14,7 @@
 import { defineComponent } from 'vue'
 import ShakeText from '@/components/ShakeText.vue'
 import ShowBlock from '@/components/ShowBlock.vue'
+import TextMask from '@/components/TextMask.vue'
 
 /**
  * 展示CSS动画效果
@@ -19,11 +23,13 @@ export default defineComponent({
   name: 'CssAnimation',
   components: {
     ShakeText,
-    ShowBlock
+    ShowBlock,
+    TextMask
   },
 
   setup () {
     return {
+      imgUrl: require('../assets/lion.jpg')
     }
   }
 })

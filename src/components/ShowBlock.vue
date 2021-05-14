@@ -30,6 +30,7 @@ export default defineComponent({
 
 <style scoped>
 .show-block {
+  margin: 40px 40px;
   display: flex;
   flex-direction: column;
 }
