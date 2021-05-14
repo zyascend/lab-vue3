@@ -21,7 +21,7 @@ export default defineComponent({
 <style scoped>
 .container {
   width: 760px;
-  margin: 20px auto;
+  margin: 10px auto;
 }
 .clip {
   background-size: cover !important;
@@ -36,5 +36,6 @@ export default defineComponent({
   text-shadow: 0 0 1px rgba(0,0,0,.1);
   margin: 0;
   padding: 0;
+  user-select: none;
 }
 </style>
