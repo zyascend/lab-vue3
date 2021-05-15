@@ -2,11 +2,11 @@
   <div class="container">
     <div class="words">
       <span
-      v-for="l in letters"
-      :key="l._id"
-      :class="l.class"
-      :style="{'opacity': `${l.opacity}`}">
-      {{l.text}}
+        v-for="l in letters"
+        :key="l._id"
+        :class="l.class"
+        :style="{'opacity': `${l.opacity}`}">
+        {{l.text}}
       </span>
     </div>
     <div class="overlay" />
@@ -64,9 +64,9 @@ export default defineComponent({
       letters: getInitLetter()
     })
 
-    const getRandomChar = () => chars[Math.floor(Math.random() * charsLength)]
+    const getRandomChar = (): string => chars[Math.floor(Math.random() * charsLength)]
 
-    const loop = () => {
+    const loop = (): void => {
       // 未完成的字随机变一次
       data.letters.forEach((item: ILoadingState, index: number) => {
         if (index >= data.letterCurrent) {
@@ -102,7 +102,7 @@ export default defineComponent({
         }, 750)
       }
     }
-    const reset = () => {
+    const reset = (): void => {
       data.isDone = false
       data.cycleCurrent = 0
       data.letterCurrent = 0
