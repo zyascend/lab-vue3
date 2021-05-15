@@ -28,8 +28,10 @@ interface DataProps {
   letterCurrent: number
   letters: Array<ILoadingState>
 }
+
 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-_=+{}|[]\\;\':"<>?,./`~'.split('')
 const charsLength = chars.length
+
 export default defineComponent({
   name: 'LetterLoading',
   props: {

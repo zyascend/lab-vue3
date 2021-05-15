@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw, createWebHistory } from 'vue-router'
+import { createRouter, RouteRecordRaw, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import About from '../views/About.vue'
 
@@ -22,6 +22,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/cssanim',
     name: 'CssAnimation',
     component: () => import(/* webpackChunkName: "unhome" */ '../views/CssAnimation.vue')
+  },
+  {
+    path: '/barrage',
+    name: 'BarrageView',
+    component: () => import(/* webpackChunkName: "unhome" */ '../views/BarrageView.vue')
   }
 ]
 

@@ -4,6 +4,7 @@
     <div class="home-links">
       <router-link to="/components">经典组件</router-link>
       <router-link to="/cssanim">Css动效</router-link>
+      <router-link to="/barrage">弹幕</router-link>
     </div>
   </div>
 </template>
