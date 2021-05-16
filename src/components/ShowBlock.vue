@@ -1,6 +1,6 @@
 <template>
   <div class="show-block">
-    <h3>▶ {{ title }}</h3>
+    <h3>{{ title ? `▶ ${title}` : '' }}</h3>
     <div class="block">
       <div class="head">
         <svg xmlns="http://www.w3.org/2000/svg" width="54" height="14" viewBox="0 0 54 14">

@@ -2,13 +2,13 @@
   <div class="components">
     <h1>CSS动画效果</h1>
   <show-block title="文字震动">
-    <shake-text text="SHAKING" />
+    <shake-text text="SHAKING"></shake-text>
   </show-block>
   <show-block title="文字遮罩">
-    <text-mask text="LION" :backUrl="imgUrl" />
+    <text-mask text="LION" :backUrl="imgUrl"></text-mask>
   </show-block>
   <show-block title="Loading">
-    <letter-loading text="LOADING..." />
+    <letter-loading text="LOADING..."></letter-loading>
   </show-block>
   </div>
 </template>

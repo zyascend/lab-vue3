@@ -1,5 +1,5 @@
 <template>
-  <div class="contanier">
+  <div class="barrage-container">
   </div>
 </template>
 
@@ -14,6 +14,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.barrage-container {
+}
 </style>

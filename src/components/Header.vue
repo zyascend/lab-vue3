@@ -29,6 +29,7 @@ export default defineComponent({
   justify-content: flex-start;
   align-items: center;
   font-size: 15px;
+  z-index: 999;
 }
 .main-header h1 {
   font-size: 20px;

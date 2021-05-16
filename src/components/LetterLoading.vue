@@ -9,7 +9,7 @@
         {{l.text}}
       </span>
     </div>
-    <div class="overlay" />
+    <div class="overlay"></div>
   </div>
 </template>
 
