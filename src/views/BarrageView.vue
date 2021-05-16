@@ -32,13 +32,12 @@ export default defineComponent({
 @import '../assets/mixin';
 .container {
   @include fullFixed;
-  width: 100%;
-  height: 100%;
   background: rgb(238,174,202);
   background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(56,90,129,1) 83%);
   z-index: -1;
   .barrage-show-block {
     margin: 50px 60px;
+    height: 80vh;
   }
 }
 </style>

@@ -29,6 +29,7 @@ export default defineComponent({
     white-space: nowrap;
     filter: blur(0.007em);
     animation: shake 2.5s linear forwards infinite;
+    margin-bottom: 10px;
 }
 
 @keyframes shake {
