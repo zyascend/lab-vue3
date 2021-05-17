@@ -7,6 +7,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, toRefs, ref, reactive, nextTick, computed } from 'vue'
 import BarrageLists from '../mock'
+import { IBarrage } from '../hooks/interfaces'
 
 interface IContainerSize {
   width: number,
@@ -22,7 +23,7 @@ export default defineComponent({
     },
     insertFreq: {
       type: Number,
-      default: 500
+      default: 1000
     },
     loop: {
       type: Boolean,
@@ -63,7 +64,7 @@ export default defineComponent({
       // 使用any规避 【Cannot assign to 'style' because it is a read-only property.】错误
       const barrage: any = document.createElement('div')
       const barrageData = data.barrageList[insertedCount]
-      barrage.style = barrageData.style
+      barrage.style = `${barrageData.style} ${barrageData.isNew ? 'border: 1px solid #fff;' : ''}`
       // @TODO 防止HTML注入
       barrage.innerHTML = barrageData.text
       barrage.classList.add('barrage')
@@ -133,6 +134,9 @@ export default defineComponent({
     const toggleShow = () => {
       data.hidden = !data.hidden
     }
+    const addBarrage = (barrages: Array<IBarrage>) => {
+      data.barrageList.splice(insertedCount, 0, ...barrages)
+    }
     const clear = () => {
       data.paused = true
       dmContainerEl.value.innerHTML = ''
@@ -157,7 +161,8 @@ export default defineComponent({
       play,
       pause,
       toggleShow,
-      clear
+      clear,
+      addBarrage
     }
   }
 })

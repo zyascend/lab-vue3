@@ -1,9 +1,5 @@
-export interface Barrage {
-  text: string,
-  style?: string,
-  direction?: string
-}
-const BarrageLists: Barrage[] = [
+import { IBarrage } from '../src/hooks/interfaces'
+const BarrageLists: IBarrage[] = [
   {
     text: '测试1',
     style: 'color: red;',

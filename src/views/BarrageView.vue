@@ -9,9 +9,9 @@
       </el-form-item>
       <el-form-item label="弹幕方向">
         <el-radio-group v-model="barrage.direction">
-          <el-radio label="向左"></el-radio>
-          <el-radio label="中间"></el-radio>
-          <el-radio label="向右"></el-radio>
+          <el-radio label="reverse">向右</el-radio>
+          <el-radio label="mid">中间</el-radio>
+          <el-radio label="normal">向左</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="弹幕样式">
@@ -26,10 +26,16 @@
       <el-button type="primary" size="small" icon="el-icon-s-promotion"  @click="onSendOne">发送1条</el-button>
       <el-button type="primary" size="small" icon="el-icon-s-promotion" @click="onSendTen">发送10条</el-button>
     </el-button-group>
+    <p class="todo">
+      TODO:<br>
+      1. 弹幕轨道处理-相同轨道弹幕不重叠<br>
+      2. 弹幕可点击, hover时停止运动<br>
+      3. 性能分析/优化<br>
+    </p>
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" scoped>
 import { defineComponent, reactive, ref } from 'vue'
 import Barrage from '@/components/Barrage.vue'
 import ShowBlock from '@/components/ShowBlock.vue'
@@ -47,9 +53,10 @@ export default defineComponent({
   setup () {
     const barrageEl = ref()
     const barrage = reactive({
-      text: 'text',
-      direction: '向右',
-      style: ''
+      text: '',
+      direction: 'normal',
+      style: '',
+      isNew: true
     })
     const onPlay = () => {
       barrageEl.value.play()
@@ -67,10 +74,10 @@ export default defineComponent({
       console.log('insertDone')
     }
     const onSendOne = () => {
-      console.log(barrage)
+      barrageEl.value.addBarrage([barrage])
     }
     const onSendTen = () => {
-      console.log(barrage)
+      barrageEl.value.addBarrage(Array.from({ length: 10 }, () => barrage))
     }
     return {
       barrageEl,
