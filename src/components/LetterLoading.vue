@@ -42,7 +42,7 @@ export default defineComponent({
   },
   setup (props) {
     let animationFrameID = 0
-    let intervalTimer = 0
+    let intervalTimer: any = 0
 
     const textList: Array<string> = props.text.split('')
     const letterCount = textList.length

@@ -1,6 +1,6 @@
 <template>
   <div class="barrage-container" ref="containerEl">
-    <div class="barrages" ref="dmContainerEl"></div>
+    <div :class="['barrages', { show: !hidden }, { paused: paused }]" ref="dmContainerEl"></div>
   </div>
 </template>
 
@@ -22,7 +22,7 @@ export default defineComponent({
     },
     insertFreq: {
       type: Number,
-      default: 100
+      default: 500
     },
     loop: {
       type: Boolean,
@@ -42,12 +42,13 @@ export default defineComponent({
     const dmContainerEl = ref<HTMLDivElement>({} as HTMLDivElement)
     let containerSize: IContainerSize = {} as IContainerSize
     let insertedCount = 0
-    let timer = 0
+    let timer: any = null
 
     const data = reactive({
       barrageList: BarrageLists,
       currentChannel: 0,
-      paused: false
+      paused: false,
+      hidden: false
     })
     const barrageCount = computed(() => {
       return data.barrageList.length
@@ -101,7 +102,7 @@ export default defineComponent({
         }
       })
     }
-    const show = () => {
+    const draw = () => {
       data.paused = false
       if (!timer) {
         nextTick(() => {
@@ -123,19 +124,40 @@ export default defineComponent({
         })
       }
     }
+    const play = () => {
+      draw()
+    }
+    const pause = () => {
+      data.paused = true
+    }
+    const toggleShow = () => {
+      data.hidden = !data.hidden
+    }
+    const clear = () => {
+      data.paused = true
+      dmContainerEl.value.innerHTML = ''
+      insertedCount = 0
+      clearInterval(timer)
+      timer = null
+    }
     onMounted(() => {
       init()
-      show()
+      draw()
     })
     onUnmounted(() => {
       insertedCount = 0
       clearInterval(timer)
+      timer = null
     })
     const refData = toRefs(data)
     return {
       ...refData,
       containerEl,
-      dmContainerEl
+      dmContainerEl,
+      play,
+      pause,
+      toggleShow,
+      clear
     }
   }
 })
@@ -150,14 +172,14 @@ export default defineComponent({
   .barrages {
     @include wh100;
     @include abs00;
-    opacity: 1;
+    opacity: 0;
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
     &.show {
       opacity: 1;
     }
     &.paused {
-      .barrage.move-to-left.mid.move-to-right {
+      .barrage.move-to-left,.barrage.mid,.barrage.move-to-right {
         animation-play-state: paused;
       }
     }
