@@ -27,6 +27,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/barrage',
     name: 'BarrageView',
     component: () => import(/* webpackChunkName: "unhome" */ '../views/BarrageView.vue')
+  },
+  {
+    path: '/upload',
+    name: 'UploadView',
+    component: () => import(/* webpackChunkName: "unhome" */ '../views/UploadView.vue')
   }
 ]
 

@@ -1,24 +1,20 @@
 <template>
-  <div class='container'>
+  <div class="container">
+    upload
   </div>
 </template>
-<script lang='ts'>
-import { defineComponent, toRefs, reactive } from 'vue'
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+
 export default defineComponent({
   name: 'Upload',
-  components: {},
-  props: {},
-  setup (props) {
-    const data = reactive({
-    })
-    const refData = toRefs(data)
-    return {
-      ...refData
-    }
+  props: {
+    text: String,
+    backUrl: String
   }
 })
 </script>
-<style lang='scss' scoped>
-.container{
-}
+
+<style scoped>
 </style>
