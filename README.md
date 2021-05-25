@@ -2,6 +2,6 @@
 
 Vue实验室
 
-效果：http://123.57.182.43:39000/
+效果：https://lab.kimjisoo.cn
 
 
