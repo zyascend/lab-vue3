@@ -27,6 +27,7 @@ interface ChunkData {
   progress: number,
   size: number
 }
+
 const CHUNK_SIZE = 10 * 1024 * 1024 // 切片大小
 
 export default defineComponent({
@@ -41,13 +42,15 @@ export default defineComponent({
       status: Status.Waiting,
       chunks: new Array<ChunkData>()
     })
+
     const uploadPercentage = computed(() => {
       if (!data.file || !data.file.length || !data.chunks.length) return 0
       const loaded = data.chunks
         .map(item => item.size * item.progress)
-        .reduce((acc, cur) => acc + cur)
+        .reduce((pre, cur) => pre + cur)
       return parseInt((loaded / data.file[0].size).toFixed(2))
     })
+
     const refData = toRefs(data)
 
     const sliceChunk = (files: FileList, size: number) => {
@@ -66,6 +69,7 @@ export default defineComponent({
         index++
       }
     }
+
     const request = (attrs: ReqAttr) => {
       return new Promise(resolve => {
         const xhr = new XMLHttpRequest()
@@ -82,6 +86,7 @@ export default defineComponent({
         }
       })
     }
+
     const notifyMerge = async () => {
       await request({
         url: 'http://localhost:3000/merge',
@@ -95,11 +100,13 @@ export default defineComponent({
         onProgress: ev => ev
       })
     }
+
     const getProgressHandlder = (index: number) => {
       return (ev: ProgressEvent) => {
         data.chunks[index].progress = parseInt(String((ev.loaded / ev.total) * 100))
       }
     }
+
     const uploadChunks = async () => {
       const reqList = data.chunks.map((item) => {
         const formData = new FormData()
@@ -117,12 +124,14 @@ export default defineComponent({
       await Promise.all(reqList)
       await notifyMerge()
     }
+
     const handleFileChange = (e: Event) => {
       const file = (e.target as HTMLInputElement).files
       if (file) {
         data.file = file
       }
     }
+
     const handleUpload = async () => {
       if (!data.file) return
       data.status = Status.Uploading
@@ -131,6 +140,7 @@ export default defineComponent({
       // 上传切片
       await uploadChunks()
     }
+
     return {
       ...refData,
       handleFileChange,
