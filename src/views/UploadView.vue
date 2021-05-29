@@ -2,6 +2,31 @@
   <div class='container'>
     <upload></upload>
     <input type="file" @change="handleFileChange">
+    <el-button @click="handleUpload">上传</el-button>
+    <div>
+      <div>总进度</div>
+      <el-progress :percentage="uploadPercentage"></el-progress>
+    </div>
+    <el-table :data="chunks">
+      <el-table-column
+        prop="hash"
+        label="切片hash"
+        align="center"
+      ></el-table-column>
+      <el-table-column label="大小(KB)" align="center" width="120">
+        <template v-slot="{ row }">
+          {{ row.kbSize }}
+        </template>
+      </el-table-column>
+      <el-table-column label="进度" align="center">
+        <template v-slot="{ row }">
+          <el-progress
+            :percentage="row.progress"
+            color="#909399"
+          ></el-progress>
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 <script lang='ts'>
@@ -25,7 +50,8 @@ interface ChunkData {
   hash: string,
   chunk: Blob,
   progress: number,
-  size: number
+  size: number,
+  kbSize: number
 }
 
 const CHUNK_SIZE = 10 * 1024 * 1024 // 切片大小
@@ -63,7 +89,8 @@ export default defineComponent({
           chunk: f,
           hash: `${filename}-${index}`,
           progress: 0,
-          size: f.size
+          size: f.size,
+          kbSize: Number((f.size / 1024).toFixed(0))
         })
         curSize += size
         index++
@@ -91,6 +118,7 @@ export default defineComponent({
       await request({
         url: 'http://localhost:3000/merge',
         data: JSON.stringify({
+          size: CHUNK_SIZE,
           filename: data.file[0].name
         }),
         method: 'post',
@@ -103,6 +131,8 @@ export default defineComponent({
 
     const getProgressHandlder = (index: number) => {
       return (ev: ProgressEvent) => {
+        console.log(index, 'getProgressHandlder')
+        console.log(String((ev.loaded / ev.total) * 100))
         data.chunks[index].progress = parseInt(String((ev.loaded / ev.total) * 100))
       }
     }
@@ -122,7 +152,9 @@ export default defineComponent({
         onProgress: getProgressHandlder(index)
       }))
       await Promise.all(reqList)
-      await notifyMerge()
+      setTimeout(async () => {
+        await notifyMerge()
+      }, 30000)
     }
 
     const handleFileChange = (e: Event) => {
