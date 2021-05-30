@@ -3,7 +3,16 @@
     <upload></upload>
     <input type="file" @change="handleFileChange">
     <el-button @click="handleUpload">上传</el-button>
+    <el-button @click="handleResume" v-if="showResume">恢复</el-button>
+    <el-button
+      v-else
+      :disabled="isPauseDisable"
+      @click="handlePause"
+      >暂停</el-button
+    >
     <div>
+      <div>计算文件 hash</div>
+      <el-progress :percentage="hashPercentage"></el-progress>
       <div>总进度</div>
       <el-progress :percentage="uploadPercentage"></el-progress>
     </div>
@@ -22,7 +31,6 @@
         <template v-slot="{ row }">
           <el-progress
             :percentage="row.progress"
-            color="#909399"
           ></el-progress>
         </template>
       </el-table-column>
@@ -36,6 +44,7 @@ import Upload from '@/components/UpLoad.vue'
 enum Status {
   Waiting,
   Uploading,
+  Pause,
 }
 
 interface ReqAttr {
@@ -66,9 +75,19 @@ export default defineComponent({
     const data = reactive({
       file: {} as FileList,
       status: Status.Waiting,
-      chunks: new Array<ChunkData>()
+      chunks: new Array<ChunkData>(),
+      worker: {} as Worker,
+      hash: '',
+      hashPercentage: 0,
+      currentXhrList: new Array<XMLHttpRequest>()
     })
-
+    const resetData = () => {
+      data.currentXhrList.forEach(xhr => xhr?.abort())
+      data.currentXhrList = []
+      if (data.worker) {
+        data.worker.onmessage = null
+      }
+    }
     const uploadPercentage = computed(() => {
       if (!data.file || !data.file.length || !data.chunks.length) return 0
       const loaded = data.chunks
@@ -77,24 +96,41 @@ export default defineComponent({
       return parseInt((loaded / data.file[0].size).toFixed(2))
     })
 
+    const isPauseDisable = computed(() => data.status !== Status.Uploading || !data.hash)
+    const showResume = computed(() => data.status === Status.Pause)
     const refData = toRefs(data)
-
-    const sliceChunk = (files: FileList, size: number) => {
+    const createHash = async (chunkList: Blob[]) => {
+      return new Promise<string>(resolve => {
+        data.worker = new Worker('/hash.js')
+        data.worker.postMessage({ chunkList })
+        data.worker.onmessage = e => {
+          const { percentage, hash } = e.data
+          data.hashPercentage = percentage
+          if (hash) {
+            data.hash = hash
+            resolve(hash)
+          }
+        }
+      })
+    }
+    const sliceChunk = async (files: FileList, size: number) => {
       let curSize = 0
-      let index = 0
-      const filename = files[0].name
+      const chunkList = []
       while (curSize < files[0].size) {
         const f = files[0].slice(curSize, curSize + size)
-        data.chunks.push({
-          chunk: f,
-          hash: `${filename}-${index}`,
-          progress: 0,
-          size: f.size,
-          kbSize: Number((f.size / 1024).toFixed(0))
-        })
+        chunkList.push(f)
         curSize += size
-        index++
       }
+      const hashList = await createHash(chunkList)
+      chunkList.forEach((chunk: Blob, index: number) => {
+        data.chunks.push({
+          hash: `${hashList}-${index}`,
+          chunk,
+          progress: 0,
+          size: chunk.size,
+          kbSize: Number((chunk.size / 1024).toFixed(0))
+        })
+      })
     }
 
     const request = (attrs: ReqAttr) => {
@@ -107,10 +143,17 @@ export default defineComponent({
         })
         xhr.send(attrs.data)
         xhr.onload = (e: ProgressEvent) => {
+          // 当前xhr请求完成 从数组删除
+          if (data.currentXhrList) {
+            const xhrIndex = data.currentXhrList.findIndex(item => item === xhr)
+            data.currentXhrList.splice(xhrIndex, 1)
+          }
           resolve({
             data: (e.target as XMLHttpRequest).response
           })
         }
+        // 所有开始的xhr请求保存到数组
+        data.currentXhrList.push(xhr)
       })
     }
 
@@ -152,23 +195,32 @@ export default defineComponent({
         onProgress: getProgressHandlder(index)
       }))
       await Promise.all(reqList)
-      setTimeout(async () => {
-        await notifyMerge()
-      }, 30000)
+      await notifyMerge()
     }
 
     const handleFileChange = (e: Event) => {
       const file = (e.target as HTMLInputElement).files
-      if (file) {
-        data.file = file
-      }
+      if (!file || !file.length) return
+      resetData()
+      data.file = file
+    }
+
+    const handleResume = async () => {
+      data.status = Status.Uploading
+      // 检查文件是否已上传 || 哪些切片已上传
+      await uploadChunks()
+    }
+
+    const handlePause = () => {
+      data.status = Status.Pause
+      resetData()
     }
 
     const handleUpload = async () => {
       if (!data.file) return
       data.status = Status.Uploading
       // 生成文件切片
-      sliceChunk(data.file, CHUNK_SIZE)
+      await sliceChunk(data.file, CHUNK_SIZE)
       // 上传切片
       await uploadChunks()
     }
@@ -177,7 +229,11 @@ export default defineComponent({
       ...refData,
       handleFileChange,
       handleUpload,
-      uploadPercentage
+      uploadPercentage,
+      handleResume,
+      handlePause,
+      isPauseDisable,
+      showResume
     }
   }
 })
